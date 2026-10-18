@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>PharmaStock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <style>
+        :root {
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            --bg: #eef3f1;
+            --sf: #fff;
+            --tx: #14262b;
+            --mu: #5d7276;
+            --bd: #d3dedb;
+            --pr: #0b6e5c;
+            --prt: #fff;
+            --ac: #e8f4f0;
+            --wa: #b4570a;
+            --wab: #fdf0e1;
+            --er: #b42318;
+            --erb: #fde8e6;
+            --ok: #17703a;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #0f1a1c;
+                --sf: #172427;
+                --tx: #e6f0ee;
+                --mu: #93a9ac;
+                --bd: #2a3d41;
+                --pr: #3cc4a6;
+                --prt: #06211b;
+                --ac: #1b3338;
+                --wa: #f0a050;
+                --wab: #3a2a14;
+                --er: #ff8a80;
+                --erb: #3d1c1a;
+                --ok: #5fd68c;
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #0f1a1c;
+            --sf: #172427;
+            --tx: #e6f0ee;
+            --mu: #93a9ac;
+            --bd: #2a3d41;
+            --pr: #3cc4a6;
+            --prt: #06211b;
+            --ac: #1b3338;
+            --wa: #f0a050;
+            --wab: #3a2a14;
+            --er: #ff8a80;
+            --erb: #3d1c1a;
+            --ok: #5fd68c;
+        }
+
+        html {
+            scroll-padding-top: env(safe-area-inset-top, 0px);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--tx);
+            font: 15px/1.5 "Segoe UI", system-ui, sans-serif;
+        }
+
+        h1, h2, h3 {
+            font-family: Georgia, "Times New Roman", serif;
+            margin: 0 0 .5rem;
+        }
+
+        button, input, select {
+            font: inherit;
+            color: inherit;
+        }
+
+        input, select {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: 6px;
+            padding: .5rem .6rem;
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: var(--mu);
+            margin-bottom: .8rem;
+        }
+
+        .btn {
+            background: var(--pr);
+            color: var(--prt);
+            border: 0;
+            border-radius: 6px;
+            padding: .5rem .9rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+            .btn.s {
+                background: var(--ac);
+                color: var(--pr);
+            }
+
+            .btn.d {
+                background: var(--erb);
+                color: var(--er);
+            }
+
+            .btn.sm {
+                padding: .25rem .55rem;
+                font-size: 13px;
+            }
+
+        :focus-visible {
+            outline: 2px solid var(--pr);
+            outline-offset: 2px;
+        }
+
+        .login {
+            max-width: 380px;
+            margin: 12vh auto;
+            padding: 1.5rem;
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: 10px;
+        }
+
+        .logo {
+            font: 700 26px Georgia, serif;
+            color: var(--pr);
+        }
+
+        nav {
+            display: flex;
+            gap: .25rem;
+            overflow-x: auto;
+            background: var(--sf);
+            border-bottom: 1px solid var(--bd);
+            padding: .5rem .8rem;
+            align-items: center;
+        }
+
+            nav button {
+                background: none;
+                border: 0;
+                padding: .45rem .8rem;
+                border-radius: 6px;
+                cursor: pointer;
+                white-space: nowrap;
+                color: var(--mu);
+            }
+
+                nav button.on {
+                    background: var(--ac);
+                    color: var(--pr);
+                    font-weight: 600;
+                }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .g {
+            display: grid;
+            gap: .8rem;
+        }
+
+        .g4 {
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        }
+
+        .g2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .c {
+            background: var(--sf);
+            border: 1px solid var(--bd);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .big {
+            font: 700 28px Georgia, serif;
+        }
+
+        .mu {
+            color: var(--mu);
+            font-size: 13px;
+        }
+
+        .tw {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: .45rem .5rem;
+            border-bottom: 1px solid var(--bd);
+            white-space: nowrap;
+        }
+
+        th {
+            color: var(--mu);
+            font-weight: 600;
+        }
+
+        .tag {
+            padding: .1rem .5rem;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--ac);
+            color: var(--pr);
+        }
+
+            .tag.w {
+                background: var(--wab);
+                color: var(--wa);
+            }
+
+            .tag.e {
+                background: var(--erb);
+                color: var(--er);
+            }
+
+        .row {
+            display: flex;
+            gap: .6rem;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+
+            .row > * {
+                flex: 1;
+                min-width: 130px;
+            }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: #000a;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            overflow: auto;
+            padding: 1rem;
+            z-index: 20;
+        }
+
+            .modal .c {
+                max-width: 560px;
+                width: 100%;
+                margin-top: 3vh;
+            }
+
+        #toast {
+            position: fixed;
+            left: 50%;
+            bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+            transform: translateX(-50%);
+            background: var(--tx);
+            color: var(--bg);
+            padding: .6rem 1rem;
+            border-radius: 8px;
+            z-index: 30;
+            display: none;
+            max-width: 90%;
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        @media print {
+            .app, .login, #toast, .noprint {
+                display: none !important;
+            }
+
+            .modal {
+                position: static;
+                background: none;
+                padding: 0;
+            }
+
+                .modal .c {
+                    border: 0;
+                    margin: 0;
+                    max-width: none;
+                }
+
+            body {
+                background: #fff;
+                color: #000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast" role="status"></div>
+
+    <!-- FORMULARIO DE LOGIN -->
+    <div class="login" id="login">
+        <div class="logo">💊 PharmaStock</div>
+        <p class="mu">Inventario por lotes y facturación para farmacia</p>
+        <label>Usuario<input id="lu" value="admin" autocomplete="username"></label>
+        <label>Contraseña<input id="lp" type="password" value="Admin123*" autocomplete="current-password"></label>
+        <button class="btn" style="width:100%" onclick="login()">Iniciar sesión</button>
+    </div>
+
+    <!-- APLICACIÓN PRINCIPAL -->
+    <div class="app hide" id="app">
+        <nav id="nav"></nav>
+        <main id="main"></main>
+    </div>
+
+    <div id="modal"></div>
+
+    <script>
+const IVA = 0.13;
+const $ = function(s) { return document.getElementById(s); };
+const day = function(n) { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+const today = function() { return day(0); };
+const m2 = function(n) { return '$' + Number(n).toFixed(2); };
+const days = function(d) { return Math.round((new Date(d) - new Date(today())) / 864e5); };
+
+let U = null, view = 'dash', cart = [], seq = 100;
+let db = { cats: [], provs: [], meds: [], lots: [], sales: [], movs: [] };
+
+async function api(m, u, b) {
+            const r = await fetch(u, {
+                method: m,
+                headers: { 'Content-Type': 'application/json' },
+                body: b ? JSON.stringify(b) : undefined
+            });
+            const j = await r.json().catch(function() { return {}; });
+            if (!r.ok) {
+                toast(j.error || 'Error del servidor');
+                throw 0;
+            }
+            return j;
+}
+
+async function load() {
+            db = await api('GET', '/api/state');
+}
+
+const toast = function(t) {
+            const e = $('toast');
+            e.textContent = t;
+            e.style.display = 'block';
+            clearTimeout(toast.t);
+            toast.t = setTimeout(function() { e.style.display = 'none'; }, 3200);
+};
+
+const med = function(id) { return db.meds.find(function(m) { return m.id == id; }); };
+const lot = function(id) { return db.lots.find(function(l) { return l.id == id; }); };
+const valid = function(l) { return l.exp >= today() && l.cur > 0; };
+const lotsOf = function(id) {
+            return db.lots.filter(function(l) { return l.med == id; }).sort(function(a, b) { return a.exp < b.exp ? -1 : 1; });
+};
+const stock = function(id) { return lotsOf(id).reduce(function(s, l) { return s + l.cur; }, 0); };
+const avail = function(id) { return lotsOf(id).filter(valid).reduce(function(s, l) { return s + l.cur; }, 0); };
+const low = function(m) { return m.on && avail(m.id) <= m.min; };
+const isAdmin = function() { return U && (U.r === 'Administrador' || U.r === 'Admin'); };
+
+async function login() {
+            try {
+                U = await api('POST', '/api/login', { u: $('lu').value.trim(), p: $('lp').value });
+                await load();
+            } catch (e) {
+                return;
+            }
+            $('login').classList.add('hide');
+            $('app').classList.remove('hide');
+            go('dash');
+}
+
+function logout() {
+            U = null;
+            cart = [];
+            $('app').classList.add('hide');
+            $('login').classList.remove('hide');
+}
+
+const tabs = [
+            ['dash', 'Panel'],
+            ['meds', 'Medicamentos'],
+            ['lots', 'Lotes'],
+            ['pos', 'Facturación'],
+            ['movs', 'Movimientos'],
+            ['rep', 'Reportes']
+];
+
+function go(v) {
+            view = v;
+            let navHtml = '<b class="logo" style="font-size:18px;margin-right:.5rem">💊 PharmaStock</b>';
+            for (let i = 0; i < tabs.length; i++) {
+                const t = tabs[i];
+                navHtml += '<button class="' + (t[0] == v ? 'on' : '') + '" onclick="go(\'' + t[0] + '\')">' + t[1] + '</button>';
+            }
+            navHtml += '<span style="flex:1"></span><span class="mu">' + U.n + ' (' + U.r + ')</span><button onclick="logout()">Salir</button>';
+            $('nav').innerHTML = navHtml;
+
+            if (v === 'dash') $('main').innerHTML = dash();
+            else if (v === 'meds') $('main').innerHTML = meds();
+            else if (v === 'lots') $('main').innerHTML = lots();
+            else if (v === 'pos') $('main').innerHTML = pos();
+            else if (v === 'movs') $('main').innerHTML = movs();
+            else if (v === 'rep') $('main').innerHTML = rep();
+}
+
+// PANEL PRINCIPAL
+function dash() {
+            const t = today();
+            const vs = db.sales.filter(function(s) { return s.fecha.slice(0, 10) == t; });
+            const tot = vs.reduce(function(s, x) { return s + x.total; }, 0);
+            const bajos = db.meds.filter(low);
+            const por = db.lots.filter(function(l) { return l.cur > 0 && l.exp >= t && days(l.exp) <= 30; });
+            const ven = db.lots.filter(function(l) { return l.cur > 0 && l.exp < t; });
+
+            let bajosHtml = '';
+            for (let i = 0; i < bajos.length; i++) {
+                const m = bajos[i];
+                bajosHtml += '<p><span class="tag w">Reabastecer</span> ' + m.n + ': ' + avail(m.id) + ' disp. (mín. ' + m.min + ')</p>';
+            }
+            if (!bajosHtml) bajosHtml = '<p class="mu">Todo en orden.</p>';
+
+            let vencHtml = '';
+            for (let i = 0; i < por.length; i++) {
+                const l = por[i];
+                vencHtml += '<p><span class="tag w">' + days(l.exp) + ' d</span> ' + med(l.med).n + ' · lote ' + l.num + ' · ' + l.cur + ' u.</p>';
+            }
+            for (let i = 0; i < ven.length; i++) {
+                const l = ven[i];
+                vencHtml += '<p><span class="tag e">Vencido</span> ' + med(l.med).n + ' · lote ' + l.num + ' · ' + l.cur + ' u.</p>';
+            }
+            if (!vencHtml) vencHtml = '<p class="mu">Todo en orden.</p>';
+
+            return '<h2>Panel principal</h2>' +
+            '<div class="g g4">' +
+                '<div class="c"><div class="mu">Ventas de hoy</div><div class="big">' + m2(tot) + '</div><div class="mu">' + vs.length + ' facturas</div></div>' +
+                '<div class="c"><div class="mu">Medicamentos activos</div><div class="big">' + db.meds.filter(function(m) { return m.on; }).length + '</div></div>' +
+                '<div class="c"><div class="mu">Stock bajo</div><div class="big" style="color:var(--wa)">' + bajos.length + '</div></div>' +
+                '<div class="c"><div class="mu">Lotes vencidos con stock</div><div class="big" style="color:var(--er)">' + ven.length + '</div></div>' +
+            '</div>' +
+            '<div class="g g2" style="margin-top:.8rem">' +
+                '<div class="c"><h3>Alerta de reabastecimiento</h3>' + bajosHtml + '</div>' +
+                '<div class="c"><h3>Próximos a vencer (30 días)</h3>' + vencHtml + '</div>' +
+            '</div>';
+}
+
+// MEDICAMENTOS
+function meds() {
+            const del = isAdmin();
+            let catsOptions = '';
+            for (let i = 0; i < db.cats.length; i++) {
+                catsOptions += '<option>' + db.cats[i] + '</option>';
+            }
+
+            let rowsHtml = '';
+            for (let i = 0; i < db.meds.length; i++) {
+                const m = db.meds[i];
+                const statusTag = !m.on ? '<span class="tag e">Inactivo</span>' : low(m) ? '<span class="tag w">Reabastecer</span>' : '<span class="tag">Normal</span>';
+                const btnAction = del ? '<button class="btn sm d" onclick="togMed(' + m.id + ')">' + (m.on ? 'Desactivar' : 'Activar') + '</button>' : '<span class="mu">Sin permisos</span>';
+
+                rowsHtml += '<tr>' +
+                    '<td>' + m.code + '</td>' +
+                    '<td>' + m.n + '</td>' +
+                    '<td>' + m.cat + '</td>' +
+                    '<td>' + m2(m.price) + '</td>' +
+                    '<td>' + stock(m.id) + '</td>' +
+                    '<td>' + m.min + '</td>' +
+                    '<td>' + statusTag + '</td>' +
+                    '<td>' + btnAction + '</td>' +
+                '</tr>';
+            }
+
+            return '<h2>Catálogo de medicamentos</h2>' +
+            '<div class="c">' +
+                '<div class="row">' +
+                    '<label>Código de barras<input id="mc"></label>' +
+                    '<label>Nombre comercial<input id="mn"></label>' +
+                    '<label>Categoría<select id="mk">' + catsOptions + '</select></label>' +
+                    '<label>Precio de venta<input id="mp" type="number" step="0.01" min="0.01"></label>' +
+                    '<label>Stock mínimo<input id="mm" type="number" min="0" value="10"></label>' +
+                    '<label><button class="btn" onclick="addMed()">Guardar medicamento</button></label>' +
+                '</div>' +
+            '</div>' +
+            '<div class="c tw" style="margin-top:.8rem">' +
+                '<table>' +
+                    '<tr><th>Código</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Mín.</th><th>Estado</th><th>Acciones</th></tr>' +
+                    rowsHtml +
+                '</table>' +
+            '</div>';
+}
+
+async function addMed() {
+            const code = $('mc').value.trim(), n = $('mn').value.trim(), p = +$('mp').value;
+            if (!code || !n) return toast('Completa código y nombre.');
+            if (!(p > 0)) return toast('El precio debe ser mayor que cero (RN-04).');
+            try {
+                await api('POST', '/api/meds', { uid: U.id, code: code, n: n, cat: $('mk').value, price: p, min: +$('mm').value });
+                await load();
+                toast('Medicamento guardado.');
+                go('meds');
+            } catch (e) {}
+}
+
+async function togMed(id) {
+            try {
+                await api('POST', '/api/meds/' + id + '/toggle?uid=' + U.id);
+                await load();
+                go('meds');
+            } catch (e) {}
+}
+
+// LOTES
+function lots() {
+            const rows = db.lots.slice().sort(function(a, b) { return a.exp < b.exp ? -1 : 1; });
+
+            let medsOptions = '';
+            const activeMeds = db.meds.filter(function(m) { return m.on; });
+            for (let i = 0; i < activeMeds.length; i++) {
+                medsOptions += '<option value="' + activeMeds[i].id + '">' + activeMeds[i].n + '</option>';
+            }
+
+            let provsOptions = '';
+            for (let i = 0; i < db.provs.length; i++) {
+                provsOptions += '<option value="' + db.provs[i].id + '">' + db.provs[i].n + '</option>';
+            }
+
+            let tableRows = '';
+            for (let i = 0; i < rows.length; i++) {
+                const l = rows[i];
+                const d = days(l.exp);
+                const mObj = med(l.med);
+                const pObj = db.provs.find(function(p) { return p.id == l.prov; });
+                const tagStatus = d < 0 ? '<span class="tag e">Vencido</span>' : d <= 30 ? '<span class="tag w">' + d + ' días</span>' : '<span class="tag">Vigente</span>';
+
+                tableRows += '<tr>' +
+                    '<td>' + (mObj ? mObj.n : '-') + '</td>' +
+                    '<td>' + l.num + '</td>' +
+                    '<td>' + (pObj ? pObj.n : '-') + '</td>' +
+                    '<td>' + l.exp + '</td>' +
+                    '<td>' + l.ini + '</td>' +
+                    '<td>' + l.cur + '</td>' +
+                    '<td>' + tagStatus + '</td>' +
+                '</tr>';
+            }
+
+            return '<h2>Lotes e inventario</h2>' +
+            '<div class="c">' +
+                '<div class="row">' +
+                    '<label>Medicamento<select id="lm">' + medsOptions + '</select></label>' +
+                    '<label>Proveedor<select id="lv">' + provsOptions + '</select></label>' +
+                    '<label>N.º de lote<input id="ln"></label>' +
+                    '<label>Vencimiento<input id="le" type="date"></label>' +
+                    '<label>Cantidad<input id="lq" type="number" min="1"></label>' +
+                    '<label><button class="btn" onclick="addLot()">Registrar lote</button></label>' +
+                '</div>' +
+            '</div>' +
+            '<div class="c tw" style="margin-top:.8rem">' +
+                '<table>' +
+                    '<tr><th>Medicamento</th><th>Lote</th><th>Proveedor</th><th>Vence</th><th>Inicial</th><th>Actual</th><th>Estado</th></tr>' +
+                    tableRows +
+                '</table>' +
+            '</div>';
+}
+
+async function addLot() {
+            const q = +$('lq').value, n = $('ln').value.trim(), e = $('le').value;
+            if (!n || !e || !(q > 0)) return toast('Completa lote, vencimiento y cantidad.');
+            try {
+                await api('POST', '/api/lots', { med: +$('lm').value, prov: +$('lv').value, num: n, exp: e, q: q, uid: U.id });
+                await load();
+                toast('Lote registrado. Stock actualizado.');
+                go('lots');
+            } catch (x) {}
+}
+
+// FACTURACIÓN
+function pos() {
+            const tot = cartTot();
+            let cartRows = '';
+            for (let i = 0; i < cart.length; i++) {
+                const x = cart[i];
+                cartRows += '<tr>' +
+                    '<td>' + med(x.m).n + '</td>' +
+                    '<td>' + lot(x.l).num + '</td>' +
+                    '<td>' + x.q + '</td>' +
+                    '<td>' + m2(x.q * med(x.m).price) + '</td>' +
+                    '<td><button class="btn sm d" onclick="cart.splice(' + i + ',1);go(\'pos\')">Quitar</button></td>' +
+                '</tr>';
+            }
+            if (!cartRows) cartRows = '<tr><td colspan="5" class="mu">Carrito vacío. Busca un producto para empezar.</td></tr>';
+
+            return '<h2>Facturación</h2>' +
+            '<div class="g g2">' +
+                '<div class="c">' +
+                    '<h3>Agregar producto</h3>' +
+                    '<label>Buscar (código o nombre)<input id="ps" oninput="fillMeds()" placeholder="Ej: amox o 7411000"></label>' +
+                    '<label>Medicamento<select id="pm" onchange="fillLots()"></select></label>' +
+                    '<label>Lote (PEPS: primero el que vence antes)<select id="pl"></select></label>' +
+                    '<label>Cantidad<input id="pq" type="number" min="1" value="1"></label>' +
+                    '<button class="btn" onclick="addCart()">Agregar al carrito</button>' +
+                '</div>' +
+                '<div class="c">' +
+                    '<h3>Carrito</h3>' +
+                    '<div class="tw">' +
+                        '<table>' +
+                            '<tr><th>Producto</th><th>Lote</th><th>Cant.</th><th>Subtotal</th><th></th></tr>' +
+                            cartRows +
+                        '</table>' +
+                    '</div>' +
+                    '<p>Subtotal: ' + m2(tot.s) + '<br>IVA (13%): ' + m2(tot.i) + '<br><b class="big" style="font-size:22px">Total: ' + m2(tot.t) + '</b></p>' +
+                    '<label>Cliente (opcional)<input id="pc" placeholder="Nombre / DUI / NIT"></label>' +
+                    '<button class="btn" onclick="sell()">Finalizar venta</button>' +
+                '</div>' +
+            '</div>';
+}
+
+const cartTot = function() {
+            const s = cart.reduce(function(a, x) { return a + x.q * med(x.m).price; }, 0);
+            const i = Math.round(s * IVA * 100) / 100;
+            return { s: s, i: i, t: s + i };
+};
+
+function fillMeds() {
+            const inputEl = $('ps');
+            const q = (inputEl ? inputEl.value : '').toLowerCase();
+            const a = db.meds.filter(function(m) { return m.on && (m.n.toLowerCase().includes(q) || m.code.includes(q)); });
+
+            let options = '';
+            for (let i = 0; i < a.length; i++) {
+                const m = a[i];
+                options += '<option value="' + m.id + '">' + m.n + ' (' + m2(m.price) + ') · disp. ' + avail(m.id) + '</option>';
+            }
+            $('pm').innerHTML = options;
+            fillLots();
+}
+
+function fillLots() {
+            const id = $('pm').value;
+            const lList = id ? lotsOf(id) : [];
+            let options = '';
+            for (let i = 0; i < lList.length; i++) {
+                const l = lList[i];
+                const isV = valid(l);
+                options += '<option value="' + l.id + '" ' + (isV ? '' : 'disabled') + '>' + l.num + ' · vence ' + l.exp + ' · ' + l.cur + ' u.' + (l.exp < today() ? ' (VENCIDO)' : '') + '</option>';
+            }
+            $('pl').innerHTML = options;
+            const f = lList.find(valid);
+            if (f) $('pl').value = f.id;
+}
+
+function addCart() {
+            const l = lot($('pl').value), q = +$('pq').value;
+            if (!l) return toast('Selecciona un lote.');
+            if (l.exp < today()) return toast('Bloqueado: el lote está vencido (RN-01).');
+            const inC = cart.filter(function(x) { return x.l == l.id; }).reduce(function(a, x) { return a + x.q; }, 0);
+            if (!(q > 0) || q + inC > l.cur) return toast('Cantidad inválida: el lote solo tiene ' + (l.cur - inC) + ' unidades disponibles (RN-02).');
+            const f = cart.find(function(x) { return x.l == l.id; });
+            if (f) f.q += q; else cart.push({ m: l.med, l: l.id, q: q });
+            go('pos');
+}
+
+async function sell() {
+            if (!cart.length) return toast('Agrega al menos un producto.');
+            try {
+                await api('POST', '/api/sales', { uid: U.id, cli: $('pc').value.trim(), items: cart.map(function(x) { return { lot: x.l, q: x.q }; }) });
+                cart = [];
+                await load();
+                invoice(db.sales[0]);
+                go('pos');
+            } catch (e) {}
+}
+
+function invoice(v) {
+            let itemsHtml = '';
+            for (let i = 0; i < v.items.length; i++) {
+                const item = v.items[i];
+                itemsHtml += '<tr><td>' + item.n + '</td><td>' + item.lote + '</td><td>' + item.q + '</td><td>' + m2(item.p) + '</td><td>' + m2(item.q * item.p) + '</td></tr>';
+            }
+
+            $('modal').innerHTML = '<div class="modal">' +
+                '<div class="c">' +
+                    '<h2>💊 PharmaStock · Comprobante</h2>' +
+                    '<p class="mu">N.º ' + v.num + ' · ' + new Date(v.fecha).toLocaleString('es-SV') + '<br>Cajero: ' + v.user + ' · Cliente: ' + v.cli + '</p>' +
+                    '<div class="tw">' +
+                        '<table>' +
+                            '<tr><th>Producto</th><th>Lote</th><th>Cant.</th><th>P. unit.</th><th>Subtotal</th></tr>' +
+                            itemsHtml +
+                        '</table>' +
+                    '</div>' +
+                    '<p style="text-align:right">Subtotal: ' + m2(v.sub) + '<br>IVA 13%: ' + m2(v.iva) + '<br><b>Total: ' + m2(v.total) + '</b></p>' +
+                    '<div class="row noprint">' +
+                        '<button class="btn" onclick="window.print()">Imprimir / Guardar PDF</button>' +
+                        '<button class="btn s" onclick="$(\'modal\').innerHTML=\'\'">Cerrar</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+}
+
+// MOVIMIENTOS
+function movs() {
+            let rowsHtml = '';
+            for (let i = 0; i < db.movs.length; i++) {
+                const m = db.movs[i];
+                const mObj = med(m.med);
+                const lObj = m.lot ? lot(m.lot) : null;
+                const tagClass = (m.t == 'SALIDA' || m.t == 'Salida') ? 'w' : '';
+
+                rowsHtml += '<tr>' +
+                    '<td>' + m.d + '</td>' +
+                    '<td><span class="tag ' + tagClass + '">' + m.t + '</span></td>' +
+                    '<td>' + (mObj ? mObj.n : '-') + '</td>' +
+                    '<td>' + (lObj ? lObj.num : '-') + '</td>' +
+                    '<td>' + m.q + '</td>' +
+                    '<td>' + m.why + '</td>' +
+                    '<td>' + m.u + '</td>' +
+                '</tr>';
+            }
+            if (!rowsHtml) rowsHtml = '<tr><td colspan="7" class="mu">Aún no hay movimientos. Registra un lote o realiza una venta.</td></tr>';
+
+            let adjustSection = '';
+            if (isAdmin()) {
+                let lotOptions = '';
+                for (let i = 0; i < db.lots.length; i++) {
+                    const l = db.lots[i];
+                    const mObj = med(l.med);
+                    lotOptions += '<option value="' + l.id + '">' + (mObj ? mObj.n : '-') + ' · ' + l.num + ' (' + l.cur + ')</option>';
+                }
+
+                adjustSection = '<div class="c" style="margin-top:.8rem">' +
+                    '<h3>Ajuste manual de inventario</h3>' +
+                    '<div class="row">' +
+                        '<label>Lote<select id="al">' + lotOptions + '</select></label>' +
+                        '<label>Cantidad (+/-)<input id="aq" type="number"></label>' +
+                        '<label>Motivo<input id="aw" placeholder="Merma, conteo físico..."></label>' +
+                        '<label><button class="btn" onclick="adj()">Aplicar ajuste</button></label>' +
+                    '</div>' +
+                '</div>';
+            }
+
+            return '<h2>Historial de movimientos</h2>' +
+            '<div class="c tw">' +
+                '<table>' +
+                    '<tr><th>Fecha</th><th>Tipo</th><th>Medicamento</th><th>Lote</th><th>Cant.</th><th>Motivo</th><th>Usuario</th></tr>' +
+                    rowsHtml +
+                '</table>' +
+            '</div>' + adjustSection;
+}
+
+async function adj() {
+            const q = +$('aq').value, w = $('aw').value.trim();
+            if (!q || !w) return toast('Indica cantidad y motivo.');
+            try {
+                await api('POST', '/api/adjust', { lot: +$('al').value, q: q, why: w, uid: U.id });
+                await load();
+                go('movs');
+            } catch (e) {}
+}
+
+// REPORTES
+function rep() {
+            return '<h2>Reportes</h2>' +
+            '<div class="row noprint">' +
+                '<button class="btn" onclick="show(\'low\')">Stock bajo</button>' +
+                '<button class="btn" onclick="show(\'exp\')">Próximos a vencer</button>' +
+                '<button class="btn" onclick="show(\'sales\')">Ventas del periodo</button>' +
+            '</div>' +
+            '<p class="mu noprint">Cada reporte se abre listo para imprimir o guardar como PDF.</p>';
+}
+
+function show(k) {
+            let t = '', h = [], r = [];
+            if (k == 'low') {
+                t = 'Reporte de stock bajo';
+                h = ['Medicamento', 'Disponible', 'Mínimo'];
+                const lowMeds = db.meds.filter(low);
+                for (let i = 0; i < lowMeds.length; i++) {
+                    const m = lowMeds[i];
+                    r.push([m.n, avail(m.id), m.min]);
+                }
+            } else if (k == 'exp') {
+                t = 'Lotes próximos a vencer / vencidos';
+                h = ['Medicamento', 'Lote', 'Vence', 'Cant.', 'Estado'];
+                const expLots = db.lots.filter(function(l) { return l.cur > 0 && days(l.exp) <= 30; });
+                for (let i = 0; i < expLots.length; i++) {
+                    const l = expLots[i];
+                    const mObj = med(l.med);
+                    r.push([mObj ? mObj.n : '-', l.num, l.exp, l.cur, l.exp < today() ? 'Vencido' : days(l.exp) + ' días']);
+                }
+            } else if (k == 'sales') {
+                t = 'Reporte de ventas';
+                h = ['Factura', 'Fecha', 'Cajero', 'Total'];
+                let sumTotal = 0;
+                for (let i = 0; i < db.sales.length; i++) {
+                    const s = db.sales[i];
+                    sumTotal += s.total;
+                    r.push([s.num, new Date(s.fecha).toLocaleString('es-SV'), s.user, m2(s.total)]);
+                }
+                r.push(['', '', 'Total general', m2(sumTotal)]);
+            }
+
+            let headersHtml = '';
+            for (let i = 0; i < h.length; i++) {
+                headersHtml += '<th>' + h[i] + '</th>';
+            }
+
+            let rowsHtml = '';
+            for (let i = 0; i < r.length; i++) {
+                let colsHtml = '';
+                for (let j = 0; j < r[i].length; j++) {
+                    colsHtml += '<td>' + r[i][j] + '</td>';
+                }
+                rowsHtml += '<tr>' + colsHtml + '</tr>';
+            }
+            if (!rowsHtml) rowsHtml = '<tr><td colspan="' + h.length + '" class="mu">Sin registros para este reporte.</td></tr>';
+
+            $('modal').innerHTML = '<div class="modal">' +
+                '<div class="c">' +
+                    '<h2>💊 PharmaStock · ' + t + '</h2>' +
+                    '<p class="mu">Generado ' + new Date().toLocaleString('es-SV') + ' por ' + U.n + '</p>' +
+                    '<div class="tw">' +
+                        '<table>' +
+                            '<tr>' + headersHtml + '</tr>' +
+                            rowsHtml +
+                        '</table>' +
+                    '</div>' +
+                    '<div class="row noprint" style="margin-top:.8rem">' +
+                        '<button class="btn" onclick="window.print()">Imprimir / Guardar PDF</button>' +
+                        '<button class="btn s" onclick="$(\'modal\').innerHTML=\'\'">Cerrar</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+}
+
+document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !$('login').classList.contains('hide')) login();
+});
+    </script>
+</body>
+</html>

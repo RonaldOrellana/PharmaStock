@@ -320,7 +320,7 @@
 
     <div id="toast" role="status"></div>
 
-    <!-- FORMULARIO DE LOGIN -->
+    <!-- LOGIN -->
     <div class="login" id="login">
         <div class="logo">💊 PharmaStock</div>
         <p class="mu">Inventario por lotes y facturación para farmacia</p>
@@ -368,6 +368,7 @@ async function load() {
 
 const toast = function(t) {
             const e = $('toast');
+            if (!e) return;
             e.textContent = t;
             e.style.display = 'block';
             clearTimeout(toast.t);
@@ -426,7 +427,10 @@ function go(v) {
             if (v === 'dash') $('main').innerHTML = dash();
             else if (v === 'meds') $('main').innerHTML = meds();
             else if (v === 'lots') $('main').innerHTML = lots();
-            else if (v === 'pos') $('main').innerHTML = pos();
+            else if (v === 'pos') {
+                $('main').innerHTML = pos();
+                setTimeout(fillMeds, 50); // Carga automáticamente los medicamentos al abrir Facturación
+            }
             else if (v === 'movs') $('main').innerHTML = movs();
             else if (v === 'rep') $('main').innerHTML = rep();
 }
@@ -600,7 +604,7 @@ async function addLot() {
             } catch (x) {}
 }
 
-// FACTURACIÓN
+// FACTURACIÓN (POS)
 function pos() {
             const tot = cartTot();
             let cartRows = '';
@@ -657,12 +661,18 @@ function fillMeds() {
                 const m = a[i];
                 options += '<option value="' + m.id + '">' + m.n + ' (' + m2(m.price) + ') · disp. ' + avail(m.id) + '</option>';
             }
-            $('pm').innerHTML = options;
-            fillLots();
+
+            const pmEl = $('pm');
+            if (pmEl) {
+                pmEl.innerHTML = options || '<option value="">Sin productos disponibles</option>';
+                fillLots();
+            }
 }
 
 function fillLots() {
-            const id = $('pm').value;
+            const pmEl = $('pm');
+            if (!pmEl) return;
+            const id = pmEl.value;
             const lList = id ? lotsOf(id) : [];
             let options = '';
             for (let i = 0; i < lList.length; i++) {
@@ -670,14 +680,21 @@ function fillLots() {
                 const isV = valid(l);
                 options += '<option value="' + l.id + '" ' + (isV ? '' : 'disabled') + '>' + l.num + ' · vence ' + l.exp + ' · ' + l.cur + ' u.' + (l.exp < today() ? ' (VENCIDO)' : '') + '</option>';
             }
-            $('pl').innerHTML = options;
-            const f = lList.find(valid);
-            if (f) $('pl').value = f.id;
+
+            const plEl = $('pl');
+            if (plEl) {
+                plEl.innerHTML = options || '<option value="">Sin lotes vigentes</option>';
+                const f = lList.find(valid);
+                if (f) plEl.value = f.id;
+            }
 }
 
 function addCart() {
-            const l = lot($('pl').value), q = +$('pq').value;
-            if (!l) return toast('Selecciona un lote.');
+            const plEl = $('pl');
+            if (!plEl || !plEl.value) return toast('Selecciona un lote.');
+            const l = lot(plEl.value);
+            const q = +$('pq').value;
+            if (!l) return toast('Selecciona un lote válido.');
             if (l.exp < today()) return toast('Bloqueado: el lote está vencido (RN-01).');
             const inC = cart.filter(function(x) { return x.l == l.id; }).reduce(function(a, x) { return a + x.q; }, 0);
             if (!(q > 0) || q + inC > l.cur) return toast('Cantidad inválida: el lote solo tiene ' + (l.cur - inC) + ' unidades disponibles (RN-02).');
